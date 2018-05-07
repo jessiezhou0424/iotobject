@@ -1,4 +1,6 @@
 # iotobject
+## everytime before you start:
+run ```git pull```
 ## setup environment:
 - ```pip install -r requirements.txt```
 - ```python manage.py runserver```
