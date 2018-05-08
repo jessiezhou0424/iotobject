@@ -2,9 +2,10 @@
 
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
-
 from wsgi import app
 from main_app import db
+
+
 
 migrate = Migrate(app, db)
 manager = Manager(app)

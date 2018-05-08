@@ -9,11 +9,13 @@ from flask_wtf import FlaskForm
 from flask_login import LoginManager,login_user,UserMixin,logout_user,login_required
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
-
+app = Flask(__name__)
+app.config['SECRET_KEY']='123456'
+app.config['SQLALCHEMY_DATABASE_URI'] ='mysql://root:123456@localhost:3306/iot'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=True
+db = SQLAlchemy(app)
 
 def create_app(config_name=None):
-    app = Flask(__name__)
     db.init_app(app)
     register_blueprints(app)
     bootstrap = Bootstrap(app)

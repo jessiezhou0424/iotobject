@@ -7,7 +7,7 @@ import sys
 
 class User(db.Model, UserMixin):
     """用户"""
-    __tablename__ = 'py_user'#对应mysql数据库表
+    __tablename__ = 'user'#对应mysql数据库表
     __table_args__ = {'mysql_engine': 'InnoDB', 'mysql_charset': 'utf8'}
 
 
