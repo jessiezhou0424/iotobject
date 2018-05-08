@@ -1,22 +1,52 @@
-import hashlib
+from  flask import render_template,Blueprint,redirect,url_for,flash
+from flask_login import login_user, logout_user,login_required
 
-from flask_login import current_user, login_user, logout_user, login_required
-from models.user import User
-from flask import request, url_for
+from main_app.forms.userform import Login_Form,Register_Form
+from main_app.models.user import User
+from main_app import db
+import json
 
 bp = Blueprint('bp_user', __name__)
 
-@bp.route('/login', methods=['POST'])
+@bp.route('/')
+def index():
+    form=Login_Form()
+    return render_template('login.html',form=form)
+
+@bp.route('/index')
+def l_index():
+    form = Login_Form()
+    return render_template('login.html',form=form)
+
+@bp.route('/login',methods=['GET','POST'])
 def login():
-    """用户登录"""
-    form = request.form
-    username = form.get('username')
-    password = form.get('password')
+        form=Login_Form()
+        if form.validate_on_submit():
+            user=User.query.filter_by(name=form.name.data).first()
+            if user is not  None and user.pwd==form.pwd.data:
+                login_user(user)
+                flash('登录成功')
+                return  render_template('ok.html',name=form.name.data)
+            else:
+                flash('用户或密码错误')
+                return render_template('login.html',form=form)
 
-    user = User.query.filter_by(username=username).first()
+#用户登出
+@bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('你已退出登录')
+    return redirect(url_for('bp_user.index'))
 
-    encrypted_password = hashlib.sha1(_str).hexdigest()
 
-    if password == encrypted_password:
-        login_user(user)
-        return json.dumps({'blah blah'})
+@bp.route('/register',methods=['GET','POST'])
+def register():
+    form=Register_Form()
+    if form.validate_on_submit():
+        user=User(name=form.name.data,pwd=form.pwd.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('注册成功')
+        return redirect(url_for('bp_user.index'))
+    return render_template('register.html',form=form)
