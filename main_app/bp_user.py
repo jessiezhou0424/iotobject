@@ -25,10 +25,10 @@ def login():
             user=User.query.filter_by(name=form.name.data).first()
             if user is not  None and user.pwd==form.pwd.data:
                 login_user(user)
-                flash('登录成功')
+                flash('success')
                 return  render_template('ok.html',name=form.name.data)
             else:
-                flash('用户或密码错误')
+                flash('wrong username or password')
                 return render_template('login.html',form=form)
         return json.dumps({'Response': 'Hello'})
 
@@ -37,7 +37,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash('你已退出登录')
+    flash('loged out')
     return redirect(url_for('bp_user.index'))
 
 
@@ -48,6 +48,6 @@ def register():
         user=User(name=form.name.data,pwd=form.pwd.data)
         db.session.add(user)
         db.session.commit()
-        flash('注册成功')
+        flash('sign up success')
         return redirect(url_for('bp_user.index'))
     return render_template('register.html',form=form)
