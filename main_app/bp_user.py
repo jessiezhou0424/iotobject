@@ -18,7 +18,7 @@ def l_index():
     form = Login_Form()
     return render_template('login.html',form=form)
 
-@bp.route('/login',methods=['GET','POST'])
+@bp.route('/login',methods=['POST'])
 def login():
         form=Login_Form()
         if form.validate_on_submit():
@@ -30,6 +30,7 @@ def login():
             else:
                 flash('用户或密码错误')
                 return render_template('login.html',form=form)
+        return json.dumps({'Response': 'Hello'})
 
 #用户登出
 @bp.route('/logout')

@@ -12,15 +12,15 @@ class User(db.Model, UserMixin):
 
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20))
-    password = db.Column(db.String(64))
+    name = db.Column(db.String(20))
+    pwd = db.Column(db.String(64))
 
     def __init__(self,name,pwd):
         self.name=name
         self.pwd=pwd
 
     def get_id(self):
-        return sys.unicode(self.id)
+        return str(self.id)
 
     def __repr__(self):
         return '<User %r>' % self.name

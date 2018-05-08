@@ -11,7 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SECRET_KEY']='123456'
-app.config['SQLALCHEMY_DATABASE_URI'] ='mysql://root:123456@localhost:3306/iot'
+app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://dev:123456@localhost/iot'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=True
 db = SQLAlchemy(app)
 
@@ -28,12 +28,11 @@ def create_app(config_name=None):
     login_manger.session_protection='strong'
     login_manger.login_view='blog.login'
     login_manger.init_app(app)
-    return app
-
     @login_manger.user_loader
     def load_user(user_id):
         from main_app.models.user import User
         return User.query.get(int(user_id))
+    return app
 
 
 def register_blueprints(app):
