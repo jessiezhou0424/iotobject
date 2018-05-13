@@ -5,13 +5,13 @@ import sys
 
 
 class Orders(db.Model):
-    """用户"""
+    """用户订单"""
     __tablename__ = 'orders'
     __table_args__ = {'mysql_engine': 'InnoDB', 'mysql_charset': 'utf8'}
 
     STATUS_DICT = { # status for order
-        0: '',
-        1: '',
+        0: 'ongoing',
+        1: 'finished',
         2: 'expired' 
     }
 
