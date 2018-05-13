@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
-
 from flask_moment import Moment
 from flask_wtf import FlaskForm
 from flask_login import LoginManager,login_user,UserMixin,logout_user,login_required
@@ -13,6 +11,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY']='123456'
 app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://dev:123456@localhost/iot'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=True
+app.config['DEBUG'] = True
 db = SQLAlchemy(app)
 
 def create_app(config_name=None):
@@ -38,9 +37,11 @@ def create_app(config_name=None):
 def register_blueprints(app):
     from main_app.hello import bp_hello
     from main_app import bp_user
+    from main_app import bp_map
 
     app.register_blueprint(bp_hello.bp, url_prefix='/hello')
     app.register_blueprint(bp_user.bp, url_prefix='/user')
+    app.register_blueprint(bp_map.bp, url_prefix='/map')
 
 
 

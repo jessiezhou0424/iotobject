@@ -1,0 +1,53 @@
+{% include 'header.html' %}
+
+<body>
+    <div id="map"></div>
+    <script>
+        // Instantiate map to the div with id "map"
+        var MapsAccountKey = "KvO9Xix-Fn8WuxK8VKnqSm7tukA-aPgycdk-tEpxoNk";
+        var map = new atlas.Map("map", {
+            "subscription-key": MapsAccountKey
+        });
+
+        function getLocation(position) {
+            new atlas.data.Point([position.coords.latitude, position.coords.longitude]);
+        }
+
+        var startPoint = navigator.geolocation.getCurrentPosition(getLocation);
+        // Create the GeoJSON objects which represent the start and end point of the route
+
+        var startPin = new atlas.data.Feature(startPoint, {
+            title: "Current Location",
+            icon: "pin-round-blue"
+        });
+
+        $(document).ready(function() {
+            var swLon = startPoint.coordinates[0];
+            var swLat = startPoint.coordinates[1];
+            var neLon = startPoint.coordinates[0];
+            var neLat = startPoint.coordinates[1];
+            map.setCameraBounds({
+                bounds: [swLon, swLat, neLon, neLat],
+                padding: 50
+            });
+
+            // Add pins to the map for the start and end point of the route
+            map.addPins([startPin], {
+                name: "Current Location",
+                textFont: "SegoeUi-Regular",
+                textOffset: [0, -20]
+            });
+
+        });
+
+
+
+    </script>
+</body>
+
+</html></title>
+</head>
+<body>
+
+</body>
+</html>
