@@ -12,6 +12,10 @@ bp = Blueprint('bp_route', __name__)
 def display():
     return render_template('maps/map_startup.html')
 
+@bp.route('/map')
+def map():
+    return render_template('maps/map.html')
+
 @bp.route('/request_route')
 def request_route():
     return render_template('login.html',form=form)

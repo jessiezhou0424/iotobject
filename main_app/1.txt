@@ -5,6 +5,8 @@ KvO9Xix-Fn8WuxK8VKnqSm7tukA-aPgycdk-tEpxoNk
 <iframe width="600" height="450" frameborder="0" style="border:0"
 src="https://www.google.com/maps/embed/v1/directions?origin=...&destination=...&key=AIzaSyDXIADIPJEwwBK2_u7VD1DXlwxFxhnIlKs" allowfullscreen></iframe>
 
+GET https://atlas.microsoft.com/route/directions/json?subscription-key=KvO9Xix-Fn8WuxK8VKnqSm7tukA-aPgycdk-tEpxoNk&api-version=1.0&query={query}
+
 
 <iframe width="600" height="450" frameborder="0" style="border:0"
 src="https://www.google.com/maps/embed/v1/directions?origin=...&destination=...&key=AIzaSyDXIADIPJEwwBK2_u7VD1DXlwxFxhnIlKs" allowfullscreen></iframe>

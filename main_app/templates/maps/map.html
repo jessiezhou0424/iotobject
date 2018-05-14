@@ -7,6 +7,8 @@
     <title>Map Route</title>
     <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/css/atlas.min.css?api-version=1.0" type="text/css" />
     <script src="https://atlas.microsoft.com/sdk/js/atlas.min.js?api-version=1.0"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js">
+    </script>
     <style>
         html,
         body {
@@ -24,8 +26,10 @@
 </head>
 
 <body>
+
     <div id="map"></div>
     <script>
+
         // Instantiate map to the div with id "map"
         var MapsAccountKey = "KvO9Xix-Fn8WuxK8VKnqSm7tukA-aPgycdk-tEpxoNk";
         var map = new atlas.Map("map", {
@@ -94,6 +98,59 @@
 
         xhttp.open("GET", url, true);
         xhttp.send();
+
+        var searchLayerName="bike";
+        var text='{"results":[{"type":"POI","dist":4225.412374672882,"poi":{"name":"Stay Tuned Bikes"},"position":{"lat":47.61999,"lon":-122.179},"viewport":{"topLeftPoint":{"lat":47.62089,"lon":-122.18033},"btmRightPoint":{"lat":47.61909,"lon":-122.17767}}}]}';
+        var response = JSON.parse(text);
+        var poiResults = response.results.filter((result) => { return result.type === "POI" }) || [];
+        var distbike=0;
+
+        async function getdist(url)
+        {
+            $.get(url,function(response){
+            dist=response.routes[0].summary.lengthInMeters;
+                return dist
+            });
+        }
+
+         function pointsget(){ poiResults.map(async (poiResult) => {
+            var distq="https://atlas.microsoft.com/route/directions/json?subscription-key=KvO9Xix-Fn8WuxK8VKnqSm7tukA-aPgycdk-tEpxoNk&api-version=1.0&query=52.50931,13.42936:52.50274,13.43872"
+            var poiPosition = [poiResult.position.lon, poiResult.position.lat];
+            distbike=await getdist(distq);
+            return new atlas.data.Feature(new atlas.data.Point(poiPosition), {
+                name: distbike,
+                position: poiResult.position.lat + ", " + poiResult.position.lon
+            });
+        });
+        }
+
+        function addpin(pointsget){
+            searchPinres=pointsget();
+        }
+
+        map.addPins(pointsget(), {
+            name: searchLayerName,
+            cluster: false,
+            icon: "pin-round-darkblue"
+        });
+
+        // Add a popup to the map which will display some basic information about a search result on hover over a pin
+        var popup = new atlas.Popup();
+        map.addEventListener("mouseover", searchLayerName, (e) => {
+            var popupContentElement = document.createElement("div");
+            popupContentElement.style.padding = "5px";
+
+            var popupNameElement = document.createElement("div");
+            popupNameElement.innerText = e.features[0].properties.name;
+            popupContentElement.appendChild(popupNameElement);
+
+            popup.setPopupOptions({
+                position: e.features[0].geometry.coordinates,
+                content: popupContentElement
+            });
+
+            popup.open(map);
+        });
     </script>
 </body>
 
