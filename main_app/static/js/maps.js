@@ -2,9 +2,11 @@ var MapsAccountKey = "KvO9Xix-Fn8WuxK8VKnqSm7tukA-aPgycdk-tEpxoNk";
 var map = new atlas.Map("map", {
     "subscription-key": MapsAccountKey
 });
+var nswPlannerKey = "Psajnbl0TfP428H2baHaz2JWmXlWetqsEOCI";
 
-var startPoint;
-navigator.geolocation.getCurrentPosition(function(position){
+
+function getLocation(position) {
+    alert('123');
     $("#start_lon").val(position.coords.longitude);
     $("#start_lat").val(position.coords.latitude);
     var start_lon = parseFloat($("#start_lon").val());
@@ -18,7 +20,7 @@ navigator.geolocation.getCurrentPosition(function(position){
     map.setCamera({
         center: [start_lon, start_lat],
         zoom:16
-    })
+    });
 
     var startPin = new atlas.data.Feature(startPoint, {
         title: "Current Location",
@@ -40,7 +42,8 @@ navigator.geolocation.getCurrentPosition(function(position){
     });
 
     return startPoint;
-});
+}
+
 
 var searchInfoPanelBody = document.getElementById("search-info");
 /* Search */
@@ -109,17 +112,62 @@ function buildPoiPopupContent(poiProperties) {
     poiContentBox.appendChild(poiInfoBox);
     return poiContentBox;
 }
+
 map.addEventListener("click", searchLayerName, function (event) {
     var pin = event.features[0];
-    searchPopup.setPopupOptions({
-        position: pin.geometry.coordinates,
-        content: buildPoiPopupContent({
-            name: pin.properties.name,
-            address: pin.properties.address,
-            phone: pin.properties.phone,
-            url: pin.properties.url
-        })
+
+    searchInfoPanelBody.style.display = 'none';
+    var destinationPoint = new atlas.data.Point(pin.geometry.coordinates);
+    var startPoint = new atlas.data.Point([$("#start_lon").val(), $("#start_lat").val() ]);
+    var swLon = Math.min(startPoint.coordinates[0], destinationPoint.coordinates[0]);
+    var swLat = Math.min(startPoint.coordinates[1], destinationPoint.coordinates[1]);
+    var neLon = Math.max(startPoint.coordinates[0], destinationPoint.coordinates[0]);
+    var neLat = Math.max(startPoint.coordinates[1], destinationPoint.coordinates[1]);
+    map.setCameraBounds({
+        bounds: [swLon, swLat, neLon, neLat],
+        padding: 50
     });
+
+
+    var routeLinesLayerName = "routes";
+    map.addLinestrings([], {
+        name: routeLinesLayerName,
+        color: "#2272B9",
+        width: 5,
+        cap: "round",
+        join: "round",
+        before: "labels"
+    });
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = JSON.parse(xhttp.responseText);
+
+            debugger;
+
+            var route = response.routes[0];
+            var routeCoordinates = [];
+            for (var leg of route.legs) {
+                var legCoordinates = leg.points.map((point) => [point.longitude, point.latitude]);
+                routeCoordinates = routeCoordinates.concat(legCoordinates);
+            }
+
+            var routeLinestring = new atlas.data.LineString(routeCoordinates);
+            map.addLinestrings([new atlas.data.Feature(routeLinestring)], { name: routeLinesLayerName });
+        }
+    };
+
+    var url = "https://transportnsw.info/web/XML_TRIP_REQUEST2?TfNSWTR=true&coordOutputFormat=EPSG:4326&exclMOT_11=1&excludedMeans=checkbox&itOptionsActive=1&language=en";
+    url += "&name_origin=" + MapsAccountKey;
+    url += "&name_destination=" + startPoint.coordinates[1] + "," + startPoint.coordinates[0] + ":" +
+        destinationPoint.coordinates[1] + "," + destinationPoint.coordinates[0];
+    url += "&travelMode=bus";
+
+    xhttp.open("GET", url, true);
+    xhttp.send();
+
+
     searchPopup.open(map);
 });
 
@@ -186,7 +234,8 @@ function searchResultsHandler() {
                     address: addressBestResult.address.freeformAddress
                 })
             ];
-        } else if (poiResults.length !== 0) {
+        }
+        else if (poiResults.length !== 0) {
             searchPins = poiResults.map(function (poiResult) {
                 var poiPosition = [poiResult.position.lon, poiResult.position.lat];
                 return new atlas.data.Feature(new atlas.data.Point(poiPosition), {
@@ -206,7 +255,8 @@ function searchResultsHandler() {
                     zoom: Math.min(map.getCamera().zoom - 1, 18)
                 });
             }
-        } else {
+        }
+        else {
             var noResultListItemElement = document.createElement("li");
             var noResultsHeaderElement = document.createElement("h4");
             noResultsHeaderElement.innerText = "No Results Returned";
@@ -270,6 +320,7 @@ function searchResultsHandler() {
                 shouldChangeCamera = true;
                 document.getElementById("search-input").value = this.dataset.search;
                 search(searchResultsHandler);
+                //searchInfoPanelBody.style.display = 'none';
             });
             searchInfoPanelBody.appendChild(resultListItemElement);
         }
@@ -300,3 +351,35 @@ searchInput.addEventListener("keyup", function (e) {
     shouldChangeCamera = (e.keyCode === 13) ? true : false;
     search(searchResultsHandler);
 });
+
+function error() {
+    var start_lon = $("#start_lon").val();
+    var start_lat = $("#start_lat").val();
+    startPoint = new atlas.data.Point([start_lon, start_lat]);
+
+    map.setCamera({
+        center: [start_lon, start_lat],
+        zoom:16
+    });
+
+    var startPin = new atlas.data.Feature(startPoint, {
+        title: "Current Location",
+        icon: "pin-round-blue"
+    });
+
+    // Add pins to the map for the start and end point of the route
+    map.addPins([startPin], {
+        name: "Current Location",
+        textFont: "SegoeUi-Regular",
+        textOffset: [0, -20]
+    });
+
+    var searchLayerName = "search-results";
+    map.addPins([], {
+        name: searchLayerName,
+        cluster: false,
+        icon: "pin-round-darkblue"
+    });
+}
+
+navigator.geolocation.getCurrentPosition(getLocation, error);
