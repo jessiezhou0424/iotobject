@@ -241,3 +241,7 @@ function error(error) {
 }
 
 navigator.geolocation.getCurrentPosition(getLocation, error);
+
+$("#button").click(function(){
+    window.location.replace('map');
+})
