@@ -5,6 +5,7 @@ from  flask import render_template,Blueprint,redirect,url_for,flash,request
 from flask_login import login_user, logout_user,login_required
 from main_app.forms.userform import Login_Form,Register_Form
 from main_app.models.user import User
+from main_app.models.bike import Bike
 from main_app import db
 import json
 import requests
@@ -23,7 +24,11 @@ def map():
 
 @bp.route('/map/addbikepin')
 def addbikepin():
-    positions=[(150.0523, -32.8306),(150.053, -32.8307),(150.0528, -32.83069)]
+    positions=[]
+    positinquery=Bike.query.filter_by(status=0)
+    for i in positinquery:
+        positions.append((i.lat,i.lon))
+    #positions=[(150.0523, -32.8306),(150.053, -32.8307),(150.0528, -32.83069)
     currentp= request.query_string.decode()[1:]
     jsonlist=[]
     for i in range(len(positions)):

@@ -214,7 +214,9 @@ searchInput.addEventListener("keyup", debounce(function (e) {
     }});
 }, 300));
 
-function error() {
+function error(error) {
+    alert("get current location failed, using default location");
+    console.log(error.message);
     var start_lon = $("#start_lon").val();
     var start_lat = $("#start_lat").val();
     startPoint = new atlas.data.Point([start_lon, start_lat]);

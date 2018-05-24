@@ -36,15 +36,15 @@
             "subscription-key": MapsAccountKey
         });
         // Create the GeoJSON objects which represent the start and end point of the route
-        var startPoint = new atlas.data.Point([150.05237, -32.83061]);
+        var startPoint = new atlas.data.Point([151.226236, -33.9245]);
         var startPin = new atlas.data.Feature(startPoint, {
             title: "UNSW",
             icon: "pin-round-blue"
         });
 
-        var destinationPoint = new atlas.data.Point([150.0527, -32.837]);
+        var destinationPoint = new atlas.data.Point([151.226236, -33.937]);
         var destinationPin = new atlas.data.Feature(destinationPoint, {
-            title: "Moore park",
+            title: "Jellicoe park",
             icon: "pin-blue"
         });
         var swLon = Math.min(startPoint.coordinates[0], destinationPoint.coordinates[0]);
@@ -94,6 +94,7 @@
         var url = "https://atlas.microsoft.com/route/directions/json?";
         url += "api-version=1.0";
         url += "&subscription-key=" + MapsAccountKey;
+        url += "&travelMode=bicycle";
         url += "&query=" + startPoint.coordinates[1] + "," + startPoint.coordinates[0] + ":" +
             destinationPoint.coordinates[1] + "," + destinationPoint.coordinates[0];
 

@@ -14,15 +14,23 @@ class Bike(db.Model):
         1: 'used'
     }
 
-    id = db.Column(db.Integer, primary_key=True)
-    lon = db.Column(db.float)
-    lat = db.Column(db.float)
+    lon = db.Column(db.Float)
+    lat = db.Column(db.Float)
     status = db.Column(db.Integer, default=0)
+    device_id = db.Column(db.Integer, primary_key=True)
 
-    def __init__(self,lon,lat,status):
+    def __init__(self,device_id,lon,lat,status):
         self.lon=lon
         self.lat=lat
         self.status=status
+        self.device_id=device_id
+
+    def to_dict(self):
+        return {
+            'device': self.device_id,
+            'log': self.lon,
+            'lat': self.lat
+        }
 
     def get_id(self):
         return str(self.id)

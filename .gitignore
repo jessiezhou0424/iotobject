@@ -3,5 +3,5 @@ __pycache__
 .idea/
 migrations/
 **/.DS_Store
-
+**/*.pyc
 
