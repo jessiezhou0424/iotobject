@@ -1,12 +1,17 @@
+import datetime
+import random
+
 from  flask import render_template,Blueprint,redirect,url_for,flash,request
 from flask_login import login_user, logout_user,login_required
-
 from main_app.forms.userform import Login_Form,Register_Form
 from main_app.models.user import User
 from main_app import db
-import json,requests
+import json
+import requests
 
-bp = Blueprint('bp_route', __name__)
+NSW_PLANNER_KEY =  "Psajnbl0TfP428H2baHaz2JWmXlWetqsEOCI"
+NSW_PLANNER_URL = "https://api.transport.nsw.gov.au/v1/tp/"
+bp = Blueprint('bp_map', __name__)
 
 @bp.route('/display')
 def display():
@@ -33,3 +38,65 @@ def addbikepin():
 @bp.route('/request_route')
 def request_route():
     return render_template('login.html',form=form)
+
+@bp.route('/stop_finder')
+def stop_finder():
+    dest = request.args.get('dest')
+
+    request_dict = {
+        'outputFormat': 'rapidJSON',
+        'odvSugMacro': 1,
+        'name_sf': dest,
+        'type_sf': 'any',
+        'coordOutputFormat': 'EPSG:4326',
+        'TfNSWSF': 'true',
+        'version': '10.2.1.42'
+    }
+
+    request_header = {
+        'Authorization': 'apikey %s' % NSW_PLANNER_KEY,
+    }
+
+    resp = requests.request("GET", NSW_PLANNER_URL + 'stop_finder/', params=request_dict, headers=request_header).json()
+    locations = resp['locations']
+    locations = sorted(locations, key=lambda x: -x['matchQuality'])[:5]
+    return json.dumps(locations)
+
+@bp.route('/route_planner')
+def route_planner():
+    origin_lon = request.args.get('origin_lon')
+    origin_lat = request.args.get('origin_lat')
+    dest = request.args.get('dest')
+    print(request.args)
+
+    request_dict = {
+        'outputFormat': 'rapidJSON',
+        'coordOutputFormat': 'EPSG:4326',
+        'depArrMacro': 'dep',
+        'odvSugMacro': 1,
+        'name_origin': "%s:%s:EPSG:4326"%(origin_lon, origin_lat),
+        'type_origin': 'coord',
+        'name_destination': dest,
+        'type_destination': 'any',
+        'TfNSWSF': 'true',
+        'version': '10.2.1.42',
+        'itdDate': datetime.datetime.now().strftime("%Y%m%d"),
+        'itdTime': datetime.datetime.now().strftime("%H%M"),
+        'TfNSWTR': 'true'
+    }
+
+    request_header = {
+        'Authorization': 'apikey %s' % NSW_PLANNER_KEY,
+    }
+
+    resp = requests.request("GET", NSW_PLANNER_URL + 'trip/', params=request_dict, headers=request_header).json()
+    for journey in resp['journeys']:
+        legs = journey['legs']
+        for leg in legs:
+            if int(leg['transportation']['product']['class']) == 5:
+                leg['transportation']['capacity'] = 80
+                leg['transportation']['currentOnboard'] = random.randint(5,80)
+                for stop in leg['stopSequence']:
+                    stop['expectedOnboard'] = random.randint(0,20)
+
+    return json.dumps(resp['journeys'])

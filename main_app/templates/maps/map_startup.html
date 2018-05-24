@@ -1,4 +1,4 @@
-{% include 'header.html' %}
+{% include 'header_nsw.html' %}
 
 <body>
     <div id="search">
@@ -8,16 +8,18 @@
                 <input id="search-input" type="text" placeholder="Search">
             </div>
         </div>
-        <ul id="search-info"></ul>
+        <ul id="search-info" class="list-group"></ul>
+        <ul id="route-list" class="list-group"></ul>
     </div>
     <div id="map"></div>
     <div id="location" style="display: none">
-        <input type="text" id="start_lon" class="start_loc">
-        <input type="text" id="start_lat" class="start_loc">
+        <input type="text" id="start_lon" class="start_loc" value="151.2218849">
+        <input type="text" id="start_lat" class="start_loc" value="-33.905051">
         <input type="text" id="dest_lon" class="dest_loc">
         <input type="text" id="dest_lat" class="dest_loc">
+        <input type="text" id="dest_name" class="dest_loc">
     </div>
-    <script src="/static/js/maps.js"></script>
+    <script src="/static/js/planner_nsw.js"></script>
 </body>
 
 </html></title>

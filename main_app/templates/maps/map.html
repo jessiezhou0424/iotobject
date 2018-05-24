@@ -53,7 +53,7 @@
         var neLat = Math.max(startPoint.coordinates[1], destinationPoint.coordinates[1]);
         map.setCameraBounds({
             bounds: [swLon, swLat, neLon, neLat],
-            padding: 50
+            padding: 200
         });
 
         // Add pins to the map for the start and end point of the route
@@ -75,10 +75,11 @@
 
         // Perform a request to the route service and draw the resulting route on the map
         var xhttp = new XMLHttpRequest();
+
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var response = JSON.parse(xhttp.responseText);
-
+                console.log(response);
                 var route = response.routes[0];
                 var routeCoordinates = [];
                 for (var leg of route.legs) {
