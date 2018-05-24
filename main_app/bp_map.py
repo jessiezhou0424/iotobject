@@ -27,7 +27,7 @@ def addbikepin():
     positions=[]
     positinquery=Bike.query.filter_by(status=0)
     for i in positinquery:
-        positions.append((i.lat,i.lon))
+        positions.append((i.lon,i.lat))
     # positions=[(151.226276, -33.9285), (151.226376, -33.9185)]
     currentp= request.query_string.decode()[1:]
     jsonlist=[]
@@ -35,10 +35,11 @@ def addbikepin():
         distq="https://atlas.microsoft.com/route/directions/json?subscription-key=KvO9Xix-Fn8WuxK8VKnqSm7tukA-aPgycdk-tEpxoNk&api-version=1.0&query="+\
         currentp.split(",")[0]+","+currentp.split(",")[1]+":"+str(positions[i][1])+","+str(positions[i][0])
         response=requests.get(distq).json()
+        print(response)
+        print(distq)
         dist=response["routes"][0]["summary"]["lengthInMeters"];
         position={"lon":positions[i][0],"lat":positions[i][1]};
         jsonlist.append({"dist":dist,"position":position})
-    print(i['dist'] for i in jsonlist)
     return json.dumps(jsonlist)
 
 @bp.route('/request_route')
