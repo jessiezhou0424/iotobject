@@ -27,7 +27,7 @@ def addbikepin():
     positions=[]
     positinquery=Bike.query.filter_by(status=0)
     for i in positinquery:
-        positions.append((i.lat,i.lon))
+        positions.append((i.lon,i.lat))
     #positions=[(150.0523, -32.8306),(150.053, -32.8307),(150.0528, -32.83069)
     currentp= request.query_string.decode()[1:]
     jsonlist=[]

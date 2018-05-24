@@ -4,4 +4,6 @@ __pycache__
 migrations/
 **/.DS_Store
 **/*.pyc
+uwsgi.ini
+**/reload.log
 
