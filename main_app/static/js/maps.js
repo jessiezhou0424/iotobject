@@ -6,7 +6,6 @@ var nswPlannerKey = "Psajnbl0TfP428H2baHaz2JWmXlWetqsEOCI";
 
 
 function getLocation(position) {
-    alert('123');
     $("#start_lon").val(position.coords.longitude);
     $("#start_lat").val(position.coords.latitude);
     var start_lon = parseFloat($("#start_lon").val());
@@ -143,9 +142,6 @@ map.addEventListener("click", searchLayerName, function (event) {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             var response = JSON.parse(xhttp.responseText);
-
-            debugger;
-
             var route = response.routes[0];
             var routeCoordinates = [];
             for (var leg of route.legs) {

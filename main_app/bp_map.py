@@ -27,8 +27,8 @@ def addbikepin():
     positions=[]
     positinquery=Bike.query.filter_by(status=0)
     for i in positinquery:
-        positions.append((i.lon,i.lat))
-    #positions=[(150.0523, -32.8306),(150.053, -32.8307),(150.0528, -32.83069)
+        positions.append((i.lat,i.lon))
+    # positions=[(151.226276, -33.9285), (151.226376, -33.9185)]
     currentp= request.query_string.decode()[1:]
     jsonlist=[]
     for i in range(len(positions)):
@@ -38,6 +38,7 @@ def addbikepin():
         dist=response["routes"][0]["summary"]["lengthInMeters"];
         position={"lon":positions[i][0],"lat":positions[i][1]};
         jsonlist.append({"dist":dist,"position":position})
+    print(i['dist'] for i in jsonlist)
     return json.dumps(jsonlist)
 
 @bp.route('/request_route')
