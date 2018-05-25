@@ -13,3 +13,11 @@ requests==2.18.4
 SQLAlchemy==1.2.7
 urllib3==1.22
 Werkzeug==0.14.1
+flask-login
+flask_wtf
+wtforms
+flask_bootstrap
+flask_moment
+PyMySQL
+python-mysqldb
+mysqlclient
