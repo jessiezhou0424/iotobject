@@ -32,7 +32,7 @@ def addbikepin():
     currentp= request.query_string.decode()[1:]
     jsonlist=[]
     for i in range(len(positions)):
-        distq="https://atlas.microsoft.com/route/directions/json?subscription-key=KvO9Xix-Fn8WuxK8VKnqSm7tukA-aPgycdk-tEpxoNk&api-version=1.0&query="+\
+        distq="https://atlas.microsoft.com/route/directions/json?subscription-key=xxx&api-version=1.0&query="+\
         currentp.split(",")[0]+","+currentp.split(",")[1]+":"+str(positions[i][1])+","+str(positions[i][0])
         response=requests.get(distq).json()
         print(response)
