@@ -12,8 +12,8 @@ engine = sqlalchemy.create_engine('mysql+mysqldb://root:dev@localhost/iot', pool
 conn = engine.connect()
 SERVICE_BUS_NAME = "IoTdataQueue"
 SHARED_ACCESS_POLICY_NAME = "RootManageSharedAccessKey"
-SHARED_ACCESS_POLICY_KEY_VALUE = "sctQlqNz7BW0pxmpnUYA3apz0LId6UBs24WgygP3vWs="
-# "Endpoint=sb://iotdataqueue.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=sctQlqNz7BW0pxmpnUYA3apz0LId6UBs24WgygP3vWs="
+SHARED_ACCESS_POLICY_KEY_VALUE = "xxx="
+# "Endpoint=sb://iotdataqueue.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=xxx="
 QUEUE_NAME = "iotqueue"
 
 def setup_client():
